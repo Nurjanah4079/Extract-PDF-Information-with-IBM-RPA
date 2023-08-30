@@ -1,0 +1,24 @@
+ÍdefVar --name pdf1 --type Pdf
+defVar --name companyName --type String
+defVar --name invoiceNumber --type String
+defVar --name invoiceDate --type String
+defVar --name subtotal --type String
+defVar --name totalDue --type String
+defVar --name textFileResult --type TextFileWriter
+pdfOpen --file "C:\\Users\\Nurjanah\\OneDrive\\Documents\\PELATIHAN\\ICSTAR HACKATHON 2023\\Hacktown2023\\IBM\\Exercise 2&3\\Exercise 2\\Invoice 1.pdf" pdf1=value
+pdfRegionText --language "en-US" --region "103,56,186,33" --useocr  --ocrprovider "Abbyy" --page 1 --dpix 110 --dpiy 110 --file ${pdf1} companyName=value
+logMessage --message "company name extracted: ${companyName}" --type "Info"
+extractPdfText --page 1 --language "en-US" --searchregion "14,15,876,535" --anchor "INVOICE #" --anchorprovider "Abbyy" --comparison "Contains" --segmentation "Phrase" --targetregion "57,-7,63,23" --targetprovider "Abbyy" --file ${pdf1} invoiceNumber=text
+extractPdfText --page 1 --language "en-US" --searchregion "17,18,880,493" --anchor "DATE:" --anchorprovider "Abbyy" --comparison "Contains" --segmentation "Phrase" --targetregion "40,-6,89,27" --targetprovider "Abbyy" --file ${pdf1} invoiceDate=text
+logMessage --message "invoice number: ${invoiceNumber}\r\ninvoice date: ${invoiceDate}" --type "Info"
+pdfRegionText --language "en-US" --region "671,970,127,23" --useocr  --ocrprovider "Abbyy" --page 1 --dpix 110 --dpiy 110 --file ${pdf1} totalDue=value
+pdfRegionText --language "en-US" --region "671,884,128,23" --useocr  --ocrprovider "Abbyy" --page 1 --dpix 110 --dpiy 110 --file ${pdf1} subtotal=value
+logMessage --message "subtotal: ${subtotal}\r\ntotal due: ${totalDue}" --type "Info"
+openTextWriter --mode "OpenOrCreate" --share "None" --path "C:\\Users\\Nurjanah\\OneDrive\\Documents\\PELATIHAN\\ICSTAR HACKATHON 2023\\Hacktown2023\\IBM\\Exercise 2&3\\Exercise 2\\PDF Extraction 2.txt" --encoding "UTF8" textFileResult=value
+textWriteLine --text "company name: ${companyName}" --file ${textFileResult}
+textWriteLine --text "invoice number: ${invoiceNumber}" --file ${textFileResult}
+textWriteLine --text "invoice date: ${invoiceDate}" --file ${textFileResult}
+textWriteLine --text "subtotal: ${subtotal}" --file ${textFileResult}
+textWriteLine --text "total due: ${totalDue}" --file ${textFileResult}
+textFlush --file ${textFileResult}
+textFileClose --file ${textFileResult}*23.0.7.0
